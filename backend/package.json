@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc && npm run copy-assets",
+    "start": "node dist/server.js",
+    "copy-assets": "cpx \"src/infrastructure/pdf/templates/**/*\" dist/infrastructure/pdf/templates && cpx \"src/infrastructure/pdf/assets/**/*\" dist/infrastructure/pdf/assets"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "handlebars": "^4.7.8",
+    "handlebars-intl": "^1.1.2",
+    "moment-timezone": "^0.6.0",
+    "wkhtmltopdf": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/handlebars": "^4.1.0",
+    "@types/node": "^25.2.1",
+    "cpx": "^1.5.0",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

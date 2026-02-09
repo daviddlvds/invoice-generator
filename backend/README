@@ -1,0 +1,161 @@
+# Invoice Generator – Backend
+
+Backend desarrollado como parte de una **prueba técnica Full Stack Senior**, enfocado en **reglas de negocio**, **arquitectura limpia** y **generación de PDFs server-side**.
+
+El objetivo principal es procesar facturas con reglas específicas según el tipo de ítems (`PRODUCT` o `SERVICE`), generar un preview con totales correctos y permitir la descarga de un PDF generado desde plantillas HTML.
+
+---
+
+## Decisiones técnicas clave
+
+* **Node.js + Express + TypeScript**
+* **Arquitectura por capas** (DTOs, Domain, Services, Controllers, Infrastructure)
+* **Generación de PDF server-side** usando:
+
+  * HTML + Handlebars (plantillas reutilizables)
+  * `wkhtmltopdf` (herramienta usada en entornos reales)
+* **Separación total entre lógica de negocio y capa HTTP**
+
+---
+
+## 📁 Estructura del proyecto
+
+```
+src/
+├─ controllers/        # Controladores HTTP (Express)
+├─ domain/             # Reglas de negocio
+│  └─ validators/
+├─ dtos/               # Contratos de entrada/salida
+├─ infrastructure/
+│  └─ pdf/             # Generación de PDFs (HTML + wkhtmltopdf)
+│     ├─ templates/
+│     │  ├─ invoices/
+│     │  └─ partials/
+├─ middlewares/        # Manejo centralizado de errores y políticas CORS
+├─ repositories/
+│  └─ inmemory/        # Persistencia temporal
+├─ routes/             # Definición de rutas
+├─ services/           # Orquestación de casos de uso
+├─ app.ts              # Configuración de Express
+└─ server.ts           # Entry point
+```
+
+---
+
+## Reglas de negocio implementadas
+
+* Una factura **NO puede mezclar** ítems de tipo `PRODUCT` y `SERVICE`.
+* Cálculo de totales:
+
+  * **SERVICE** → el descuento se aplica **antes** de impuestos.
+  * **PRODUCT** → el descuento se aplica **después** de impuestos.
+* Validación backend obligatoria (no dependiente del frontend).
+
+---
+
+## Endpoints disponibles
+
+### ▶️ Preview de factura
+
+`POST /api/invoices/preview`
+
+Calcula y devuelve los totales de la factura.
+
+**Body (ejemplo):**
+
+```json
+{
+  "company": {
+    "name": "",
+    "contactName": "",
+    "website": "",
+    "address": "",
+    "zip": "",
+    "country": "",
+    "email": ""
+  },
+  "client": {
+    "name": "",
+    "address": "",
+    "cityStateZip": "",
+    "country": "",
+    "email": ""
+  },
+  "meta": {
+    "invoiceNumber": "INV-001",
+    "invoiceDate": "2026-02-08",
+    "dueDate": "2026-02-08"
+  },
+  "notes": "",
+  "items": [
+    {
+      "type": "SERVICE",
+      "description": "Item 1",
+      "quantity": 3,
+      "unitPrice": 543,
+      "discount": 0,
+      "taxRate": 0.16
+    }
+  ]
+}
+
+```
+
+---
+
+### ▶️ Generar PDF
+
+`POST /api/invoices/pdf`
+
+Genera y devuelve un PDF basado en una plantilla HTML.
+
+```bash
+curl -X POST http://localhost:3001/api/invoices/pdf \
+  -H "Content-Type: application/json" \
+  -d '{...}' --output invoice.pdf
+```
+
+---
+
+## Generación de PDFs
+
+* Plantillas HTML con Handlebars
+* Uso de **partials globales** (`header`, `footer`) para layout compartido
+* Helpers personalizados (`formatCurrency`, `formatDate`, etc.)
+* El PDF se genera **server-side**, sin depender del frontend
+
+---
+
+## Requisitos
+
+* Node.js >= 18
+* wkhtmltopdf instalado en el sistema
+
+### macOS
+
+```bash
+brew install wkhtmltopdf
+```
+
+---
+
+## Ejecutar el proyecto
+
+```bash
+npm install
+npm run dev
+```
+
+Servidor disponible en:
+
+```
+http://localhost:3001
+```
+
+
+---
+
+## Autor
+
+David Delgado
+Prueba técnica – Full Stack Senior Developer
