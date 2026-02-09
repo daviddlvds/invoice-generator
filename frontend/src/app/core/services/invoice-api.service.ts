@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { InvoiceInput, InvoicePreview } from '../models/invoice.model';
+import {environment} from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceApiService {
-  private baseUrl = process.env['API_BASE_URL'] || 'https://invoice-generator-production-b22a.up.railway.app/api';
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
