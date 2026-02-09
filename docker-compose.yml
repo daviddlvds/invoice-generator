@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  invoice-generator-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: invoice-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+
+  invoice-generator-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: build:dev
+    container_name: invoice-frontend
+    ports:
+      - "4000:4000"
+    depends_on:
+      - invoice-generator-backend
+    restart: unless-stopped

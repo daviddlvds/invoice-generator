@@ -8,7 +8,8 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build
+ARG BUILD_CONFIGURATION=build
+RUN npm run ${BUILD_CONFIGURATION}
 
 FROM node:20-alpine AS runner
 
