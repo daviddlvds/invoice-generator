@@ -5,15 +5,15 @@ import { InvoiceInput, InvoicePreview } from '../models/invoice.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceApiService {
-  private baseUrl = 'http://localhost:3001/api/invoices';
+  private baseUrl = process.env['API_BASE_URL'] || 'https://invoice-generator-production-b22a.up.railway.app/api';
 
   constructor(private http: HttpClient) {}
 
   previewInvoice(payload: InvoiceInput): Observable<InvoicePreview> {
-    return this.http.post<InvoicePreview>(`${this.baseUrl}/preview`, payload);
+    return this.http.post<InvoicePreview>(`${this.baseUrl}/invoices/preview`, payload);
   }
 
   generatePdf(payload: InvoiceInput): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}/pdf`, payload, { responseType: 'blob' });
+    return this.http.post(`${this.baseUrl}/invoices/pdf`, payload, { responseType: 'blob' });
   }
 }
